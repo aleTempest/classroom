@@ -2,37 +2,34 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Career;
-use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 
 class CareerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        $faker = Faker::create();
-        $careerNames = [
-            'Software Engineer',
-            'Data Scientist',
-            'Web Developer',
-            'Network Administrator',
-            'Database Administrator',
-            'Systems Analyst',
-            'UX/UI Designer',
-            'DevOps Engineer',
-            'Cybersecurity Specialist',
-            'Cloud Architect'
+        $careers = [
+            'Computer Science',
+            'Business Administration',
+            'Electrical Engineering',
+            'Mechanical Engineering',
+            'Medicine',
+            'Law',
+            'Architecture',
+            'Psychology',
+            'Nursing',
+            'Education',
+            'Graphic Design',
+            'Marketing',
+            'Accounting',
+            'Civil Engineering',
+            'Biology',
         ];
 
-        foreach ($careerNames as $name) {
+        foreach ($careers as $career) {
             Career::create([
-                'name' => $name,
-                'created_at' => $faker->dateTimeBetween('-1 year', 'now'),
-                'updated_at' => now(),
+                'name' => $career,
             ]);
         }
     }

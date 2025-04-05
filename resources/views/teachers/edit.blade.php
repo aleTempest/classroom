@@ -16,6 +16,7 @@
                         @method('PUT')
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Teacher Fields -->
                             <div>
                                 <x-label for="first_name" value="{{ __('First Name') }}" />
                                 <x-input id="first_name" class="block mt-1 w-full" type="text" name="first_name"
@@ -51,15 +52,28 @@
                             </div>
 
                             <div>
-                                <x-label for="email" value="{{ __('Email') }}" />
-                                <x-input id="email" class="block mt-1 w-full" type="email" name="email"
-                                    :value="old('email', $teacher->email)" />
-                            </div>
-
-                            <div>
                                 <x-label for="phone_number" value="{{ __('Phone Number') }}" />
                                 <x-input id="phone_number" class="block mt-1 w-full" type="tel" name="phone_number"
                                     :value="old('phone_number', $teacher->phone_number)" />
+                            </div>
+
+                            <!-- User Fields -->
+                            <div>
+                                <x-label for="email" value="{{ __('Email') }}" />
+                                <x-input id="email" class="block mt-1 w-full" type="email" name="email"
+                                    :value="old('email', $teacher->user->email)" required />
+                            </div>
+
+                            <div>
+                                <x-label for="password" value="{{ __('Password') }}" />
+                                <x-input id="password" class="block mt-1 w-full" type="password" name="password"
+                                    placeholder="{{ __('Leave blank to keep current password') }}" />
+                            </div>
+
+                            <div>
+                                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
+                                <x-input id="password_confirmation" class="block mt-1 w-full" type="password"
+                                    name="password_confirmation" />
                             </div>
                         </div>
 

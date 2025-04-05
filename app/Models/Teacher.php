@@ -28,4 +28,9 @@ class Teacher extends Model
     {
         return "{$this->first_name} {$this->last_name}";
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

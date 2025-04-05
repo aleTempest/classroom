@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CareerController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +19,11 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::resources([
-    'careers' => CareerController::class,
-    'teachers' => TeacherController::class,
-]);
+// Estas rutas solo pueden ser accedidas por usuarios con rol 'admin'.
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resources([
+        'careers' => CareerController::class,
+        'teachers' => TeacherController::class,
+        'students' => StudentController::class,
+    ]);
+});
