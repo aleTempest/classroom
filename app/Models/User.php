@@ -75,4 +75,12 @@ class User extends Authenticatable
         return $this->hasOne(Student::class);
     }
 
+    public function hasRole($role)
+    {
+        // Simple implementation - adjust based on your role system
+        return $this->role === $role;
+
+        // Or if using a roles relationship:
+        // return $this->roles()->where('name', $role)->exists();
+    }
 }

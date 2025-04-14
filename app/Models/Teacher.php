@@ -33,4 +33,10 @@ class Teacher extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function rooms()
+    {
+        return $this->belongsToMany(Room::class, 'teacher_room')
+                    ->withTimestamps();
+    }
 }

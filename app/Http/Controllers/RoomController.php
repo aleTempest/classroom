@@ -102,7 +102,7 @@ public function update(Request $request, Room $room)
 
         // Students to remove (current enrollments not in new selections)
         $studentsToRemove = array_diff($currentEnrollments, $request->students);
-
+        dd(currentEnrollments);
         // Add new enrollments
         foreach ($studentsToAdd as $studentId) {
             Enrollment::create([

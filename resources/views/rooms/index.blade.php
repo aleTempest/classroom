@@ -35,9 +35,10 @@
                                     <p class="text-sm text-indigo-600 mt-1">
                                         {{ $room->career->name }}
                                     </p>
+
                                 </div>
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                                    {{ $room->enrollments_count ?? 0 }} students
+                                    {{ $room->getEnrollmentCount() ?? 0 }} students
                                 </span>
                             </div>
 

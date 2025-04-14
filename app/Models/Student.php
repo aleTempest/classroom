@@ -29,4 +29,15 @@ class Student extends Model
     {
         return $this->belongsTo(Career::class);
     }
+
+    /**
+     * Get all posts the student has read
+     */
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class)
+            ->using(PostStudent::class)
+            ->withPivot('read_at')
+            ->withTimestamps();
+    }
 }

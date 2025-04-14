@@ -5,23 +5,32 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Room;
 use App\Models\User;
+use App\Models\Career;
 use App\Models\Enrollment;
 
 class RoomStudentEnrollment extends Component
 {
     public Room $room;
+    public $careers;
     public $search = '';
     public $selectedStudents = [];
     public $enrolledStudents = [];
     public $searchResults = [];
+    
+    // Room fields
+    public $career_id;
+    public $code;
+    public $name;
+    public $desc;
 
     protected $listeners = ['refreshEnrollments' => 'loadEnrolledStudents'];
+    protected $rules = [
+        'career_id' => 'required|exists:careers,id',
+        'code' => 'required|string|max:20|unique:rooms,code,',
+        'name' => 'required|string|max:100',
+        'desc' => 'nullable|string|max:255',
+    ];
 
-    public function mount(Room $room)
-    {
-        $this->room = $room;
-        $this->loadEnrolledStudents();
-    }
 
     public function loadEnrolledStudents()
     {
@@ -79,7 +88,6 @@ class RoomStudentEnrollment extends Component
 
     public function saveEnrollments()
     {
-        dd('saving');
         // Get current enrollments
         $currentEnrollments = $this->room->enrollments()->pluck('user_id')->toArray();
 
@@ -117,6 +125,36 @@ class RoomStudentEnrollment extends Component
             unset($this->selectedStudents[$key]);
         }
         $this->saveEnrollments();
+    }
+
+    public function mount(Room $room)
+    {
+        $this->room = $room;
+        $this->careers = Career::all();
+        $this->career_id = $room->career_id;
+        $this->code = $room->code;
+        $this->name = $room->name;
+        $this->desc = $room->desc;
+        $this->loadEnrolledStudents();
+    }
+
+    public function saveAll()
+    {
+        // Validate and save room data
+        $this->validate();
+        
+        $this->room->update([
+            'career_id' => $this->career_id,
+            'code' => $this->code,
+            'name' => $this->name,
+            'desc' => $this->desc,
+        ]);
+
+        // Save enrollments
+        $this->saveEnrollments();
+
+        session()->flash('message', 'Room and enrollments updated successfully');
+        return redirect()->route('rooms.index');
     }
 
     public function render()
