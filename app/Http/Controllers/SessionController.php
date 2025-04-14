@@ -15,10 +15,19 @@ class SessionController extends Controller
         $user = Auth::user();
 
         if ($user->hasRole('admin')) {
+            $topTeachers = Teacher::withCount(['posts' => function($query) {
+                $query->whereNotNull('published_at')
+                      ->where('published_at', '<=', now());
+            }])
+                ->orderByDesc('posts_count')
+                ->take(5)
+                ->get();
+
             return view('admin-dashboard', [
                 'careersCount' => Career::count(),
                 'teachersCount' => Teacher::count(),
                 'roomsCount' => Room::count(),
+                'topTeachers' => $topTeachers
             ]);
         }
 

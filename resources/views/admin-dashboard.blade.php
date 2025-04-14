@@ -64,38 +64,54 @@
                 </div>
             </div>
 
-            <!-- Recent Activity Section -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
-                    <div class="space-y-4">
-                        <!-- Sample activity items - you would replace these with real data -->
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 pt-0.5">
-                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm text-gray-700">You created a new career "Computer Science"</p>
-                                <p class="text-sm text-gray-500">3 hours ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 pt-0.5">
-                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm text-gray-700">You updated teacher "John Doe" information</p>
-                                <p class="text-sm text-gray-500">5 hours ago</p>
-                            </div>
+<!-- Top Teachers by Posts Section -->
+<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
+    <div class="p-6 bg-white border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Top Teachers by Published Posts</h3>
+        <div class="space-y-4">
+            @forelse($topTeachers as $teacher)
+            <div class="flex items-start justify-between">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 pt-0.5">
+                        <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">
+                            {{ $teacher->full_name }}
+                            <span class="text-gray-500 ml-2">({{ $teacher->email }})</span>
+                        </p>
+                        <div class="flex items-center mt-1">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                {{ $teacher->posts_count }} published posts
+                            </span>
+                            <a href="{{ route('teachers.show', $teacher) }}" class="ml-2 text-sm text-indigo-600 hover:text-indigo-900">
+                                View Profile
+                            </a>
                         </div>
                     </div>
                 </div>
+                <a href="{{ route('posts.index', ['teacher_id' => $teacher->id]) }}" class="text-sm text-indigo-600 hover:text-indigo-900">
+                    View Posts
+                </a>
             </div>
+            @empty
+            <div class="text-center text-gray-500 py-4">
+                No teachers with published posts found
+            </div>
+            @endforelse
+        </div>
 
+        @if($topTeachers->count() > 0)
+        <div class="mt-4 text-right">
+            <a href="{{ route('teachers.index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-900">
+                View All Teachers →
+            </a>
+        </div>
+        @endif
+    </div>
+</div>
             <!-- Quick Actions -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
