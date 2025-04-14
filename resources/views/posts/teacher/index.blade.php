@@ -54,7 +54,7 @@
                                     <div>
                                         <h3 class="text-lg font-medium text-gray-900">{{ $post->title }}</h3>
                                         <p class="text-sm text-gray-500 mt-1">
-                                            Posted in {{ $post->room->name }} • 
+                                            Posted in {{ $post->room->name }} •
                                             {{ $post->published_at ? $post->published_at->format('M d, Y H:i') : 'Draft' }}
                                         </p>
                                     </div>

@@ -20,11 +20,28 @@ class SessionController extends Controller
                 'teachersCount' => Teacher::count(),
                 'roomsCount' => Room::count(),
             ]);
-
         }
 
         if ($user->hasRole('teacher')) {
-            return view('dashboard');
+            $teacher = Teacher::with(['posts' => function($query) {
+                $query->with(['room', 'attachments', 'students'])
+                      ->latest();
+            }])->findOrFail($user->teacher->id);
+
+            $publishedCount = $teacher->getPublishedPostsCount();
+            $draftCount = $teacher->getDraftPostsCount();
+
+            $posts = $teacher->posts()
+                             ->with(['room', 'attachments', 'students'])
+                             ->latest()
+                             ->paginate(10);
+
+            return view('posts.teacher.index', compact(
+                'teacher',
+                'publishedCount',
+                'draftCount',
+                'posts'
+            ));
         }
 
         return view('dashboard');
