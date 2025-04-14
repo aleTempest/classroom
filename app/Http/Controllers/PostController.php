@@ -22,7 +22,14 @@ class PostController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('posts.index', compact('posts'));
+        $teacher = auth()->user()->teacher; // Assuming authenticated teacher
+
+        return view('posts.teacher.index', [
+            'teacher' => $teacher,
+            'publishedCount' => $teacher->posts()->whereNotNull('published_at')->count(),
+            'draftCount' => $teacher->posts()->whereNull('published_at')->count(),
+            'posts' => $teacher->posts()->with(['room', 'attachments'])->latest()->paginate(10)
+        ]);
     }
 
     /**
@@ -30,10 +37,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        $teachers = Teacher::all();
+        $teacherId = auth()->user()->teacher->id;
         $rooms = Room::all();
-        
-        return view('posts.create', compact('teachers', 'rooms'));
+        return view('posts.create', compact('teacherId', 'rooms'));
     }
 
     /**
@@ -51,14 +57,20 @@ class PostController extends Controller
             'attachments.*' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,jpg,png|max:2048',
         ]);
 
+        // Handle "Publish Now" checkbox
+        if ($request->has('publish_now')) {
+            $validated['published_at'] = now();
+        }
+
         $post = Post::create($validated);
 
         if ($request->hasFile('attachments')) {
             $this->handleAttachments($request->file('attachments'), $post);
         }
 
-        return redirect()->route('posts.show', $post)
-            ->with('success', 'Post created successfully.');
+
+        return redirect()->route('teacher.posts.index')
+                         ->with('success', 'Post created successfully.');
     }
 
     /**
@@ -77,7 +89,7 @@ class PostController extends Controller
     {
         $teachers = Teacher::all();
         $rooms = Room::all();
-        
+
         return view('posts.edit', compact('post', 'teachers', 'rooms'));
     }
 
@@ -111,7 +123,7 @@ class PostController extends Controller
         }
 
         return redirect()->route('posts.show', $post)
-            ->with('success', 'Post updated successfully.');
+                         ->with('success', 'Post updated successfully.');
     }
 
     /**
@@ -123,11 +135,11 @@ class PostController extends Controller
         foreach ($post->attachments as $attachment) {
             Storage::disk($attachment->disk)->delete($attachment->path);
         }
-        
+
         $post->delete();
 
         return redirect()->route('posts.index')
-            ->with('success', 'Post deleted successfully.');
+                         ->with('success', 'Post deleted successfully.');
     }
 
     /**
@@ -140,7 +152,7 @@ class PostController extends Controller
             $extension = $file->getClientOriginalExtension();
             $mimeType = $file->getMimeType();
             $size = $file->getSize();
-            
+
             // Generate unique filename
             $filename = Str::uuid() . '.' . $extension;
             $path = $file->storeAs('posts/' . $post->id, $filename, 'public');
@@ -162,7 +174,7 @@ class PostController extends Controller
     protected function deleteAttachments(array $attachmentIds)
     {
         $attachments = PostAttachment::whereIn('id', $attachmentIds)->get();
-        
+
         foreach ($attachments as $attachment) {
             Storage::disk($attachment->disk)->delete($attachment->path);
             $attachment->delete();

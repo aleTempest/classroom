@@ -10,13 +10,19 @@ class TeacherPostController extends Controller
 {
     public function index()
     {
-        $teacherId = Auth::id(); // Assuming teachers are authenticated users
-        
+        $teacher = auth()->user()->teacher;
+
         $posts = Post::with(['room', 'attachments', 'students'])
-            ->where('teacher_id', $teacherId)
+            ->where('teacher_id', $teacher->id)
             ->latest()
             ->paginate(15);
-
-        return view('posts.teacher.index', compact('posts'));
+        $publishedCount = $teacher->publishedCount;
+        $draftCount = $teacher->draftCount;
+        return view('posts.teacher.index', compact(
+            'teacher',
+            'publishedCount',
+            'draftCount',
+            'posts'
+        ));
     }
 }
